@@ -1,8 +1,5 @@
 <?php
-if (empty($response['result'])) {
-    $response['result'] = [
-        'error' => 'Unknown request!'
-    ];
-}
+
+echo $this->element('RestApi.error_default');
 
 echo json_encode($response);

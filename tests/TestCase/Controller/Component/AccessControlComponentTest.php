@@ -7,7 +7,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Network\Response;
-use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\TestCase;
 use RestApi\Controller\Component\AccessControlComponent;
 
 /**
@@ -55,11 +55,11 @@ class AccessControlComponentTest extends TestCase
     }
 
     /**
-     * Test startup method
+     * Test beforeFilter method
      *
      * @return void
      */
-    public function testStartup()
+    public function testBeforeFilter()
     {
         $config = [
             'log' => false,
@@ -78,10 +78,10 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $this->setExpectedException('RestApi\Routing\Exception\MissingTokenException');
+        $this->expectException('RestApi\Routing\Exception\MissingTokenException');
 
-        $event = new Event('Controller.startup', $this->controller);
-        $this->assertEquals($this->AccessControlComponent->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $this->controller);
+        $this->assertEquals($this->AccessControlComponent->beforeFilter($event), true);
     }
 
     public function testPublicAction()
@@ -93,8 +93,8 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $event = new Event('Controller.startup', $this->controller);
-        $this->assertEquals($this->AccessControlComponent->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $this->controller);
+        $this->assertEquals($this->AccessControlComponent->beforeFilter($event), true);
     }
 
     public function testAccessToken()
@@ -111,8 +111,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $this->assertEquals($Component->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $this->assertEquals($Component->beforeFilter($event), true);
         unset($Controller);
         unset($Component);
     }
@@ -142,8 +142,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $this->assertEquals($Component->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $this->assertEquals($Component->beforeFilter($event), true);
         unset($Controller);
         unset($Component);
     }
@@ -173,8 +173,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $this->assertEquals($Component->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $this->assertEquals($Component->beforeFilter($event), true);
         unset($Controller);
         unset($Component);
     }
@@ -203,8 +203,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $this->assertEquals($Component->startup($event), true);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $this->assertEquals($Component->beforeFilter($event), true);
         unset($Controller);
         unset($Component);
     }
@@ -220,7 +220,7 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $this->setExpectedException('RestApi\Routing\Exception\InvalidTokenException');
+        $this->expectException('RestApi\Routing\Exception\InvalidTokenException');
 
         $token = 'invalid token format';
         $requestConfig = [
@@ -232,8 +232,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $Component->startup($event);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $Component->beforeFilter($event);
 
         unset($Controller);
         unset($Component);
@@ -250,7 +250,7 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $this->setExpectedException('RestApi\Routing\Exception\InvalidTokenFormatException');
+        $this->expectException('RestApi\Routing\Exception\InvalidTokenFormatException');
 
         $requestConfig = [
             'params' => ['allowWithoutToken' => false]
@@ -261,8 +261,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $Component->startup($event);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $Component->beforeFilter($event);
 
         unset($Controller);
         unset($Component);
@@ -279,7 +279,7 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $this->setExpectedException('RestApi\Routing\Exception\InvalidTokenException');
+        $this->expectException('RestApi\Routing\Exception\InvalidTokenException');
 
         $requestConfig = [
             'params' => ['allowWithoutToken' => false]
@@ -290,8 +290,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $Component->startup($event);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $Component->beforeFilter($event);
 
         unset($Controller);
         unset($Component);
@@ -308,7 +308,7 @@ class AccessControlComponentTest extends TestCase
         ];
         Configure::write('ApiRequest', $config);
 
-        $this->setExpectedException('RestApi\Routing\Exception\MissingTokenException');
+        $this->expectException('RestApi\Routing\Exception\MissingTokenException');
 
         $requestConfig = [
             'params' => ['allowWithoutToken' => false]
@@ -318,8 +318,8 @@ class AccessControlComponentTest extends TestCase
         $Controller = new \TestApp\Controller\FooController($request);
         $registry = new ComponentRegistry($Controller);
         $Component = new AccessControlComponent($registry);
-        $event = new Event('Controller.startup', $Controller);
-        $Component->startup($event);
+        $event = new Event('Controller.beforeFilter', $Controller);
+        $Component->beforeFilter($event);
 
         unset($Controller);
         unset($Component);

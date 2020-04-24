@@ -21,14 +21,14 @@ class AccessControlComponent extends Component
 {
 
     /**
-     * Startup method.
+     * beforeFilter method.
      *
      * Handles request authentication using JWT.
      *
      * @param Event $event The startup event
      * @return Response
      */
-    public function startup(Event $event)
+    public function beforeFilter(Event $event)
     {
         if (Configure::read('ApiRequest.jwtAuth.enabled')) {
             return $this->_performTokenValidation($event);
@@ -46,28 +46,28 @@ class AccessControlComponent extends Component
      */
     protected function _performTokenValidation(Event $event)
     {
-        $request = $event->subject()->request;
+        $request = $event->getSubject()->request;
 
-        if (!empty($request->params['allowWithoutToken']) && $request->params['allowWithoutToken']) {
+        if (!empty($request->getParam('allowWithoutToken')) && $request->getParam('allowWithoutToken')) {
             return true;
         }
 
         $token = '';
 
-        $header = $request->header('Authorization');
+        $header = $request->getHeader('Authorization');
 
-        if (!empty($header)) {
-            $parts = explode(' ', $header);
+        if (!empty($header[0])) {
+            $parts = explode(' ', $header[0]);
 
             if (count($parts) < 2 || empty($parts[0]) || !preg_match('/^Bearer$/i', $parts[0])) {
                 throw new InvalidTokenFormatException();
             }
 
             $token = $parts[1];
-        } elseif (!empty($this->request->query('token'))) {
-            $token = $this->request->query('token');
-        } elseif (!empty($request->data['token'])) {
-            $token = $request->data['token'];
+        } elseif (!empty($this->request->getQuery('token'))) {
+            $token = $this->request->getQuery('token');
+        } elseif (!empty($request->getParam('token'))) {
+            $token = $request->getParam('token');
         } else {
             throw new MissingTokenException();
         }

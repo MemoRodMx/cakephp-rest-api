@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property string $ip_address
  * @property string $request_data
  * @property int $response_code
+ * @property string $response_type
  * @property string $response_data
  * @property string $exception
  * @property \Cake\I18n\Time $created

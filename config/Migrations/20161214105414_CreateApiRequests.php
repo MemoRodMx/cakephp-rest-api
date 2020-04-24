@@ -31,6 +31,7 @@ class CreateApiRequests extends AbstractMigration
         $table->addColumn('token', 'string', [
             'default' => null,
             'limit' => 2048,
+            'null' => true,
         ]);
         $table->addColumn('ip_address', 'string', [
             'default' => null,
@@ -40,6 +41,7 @@ class CreateApiRequests extends AbstractMigration
         $table->addColumn('request_data', 'text', [
             'default' => null,
             'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('response_code', 'integer', [
             'limit' => 5,
@@ -48,11 +50,11 @@ class CreateApiRequests extends AbstractMigration
         ]);
         $table->addColumn('response_data', 'text', [
             'default' => null,
-            'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('exception', 'text', [
             'default' => null,
-            'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('created', 'datetime', [
             'null' => false,

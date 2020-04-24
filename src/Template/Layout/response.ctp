@@ -1,9 +1,5 @@
 <?php
 
-if (empty($response['result'])) {
-    $response['result'] = [
-        'message' => 'Empty response!'
-    ];
-}
+echo $this->element('RestApi.response_default');
 
 echo json_encode($response);

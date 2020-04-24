@@ -5,6 +5,7 @@ namespace RestApi\Error;
 use Cake\Core\Configure;
 use Cake\Error\ExceptionRenderer;
 use Cake\Network\Response;
+use Cake\Utility\Xml;
 use Exception;
 use RestApi\Controller\ApiErrorController;
 use RestApi\Routing\Exception\InvalidTokenException;
@@ -77,23 +78,33 @@ class ApiExceptionRenderer extends ExceptionRenderer
     {
         $response = $this->_getController()->response;
         $code = $this->_code($exception);
-        $response->statusCode($this->_code($exception));
+        $response->getStatusCode($this->_code($exception));
 
         Configure::write('apiExceptionMessage', $exception->getMessage());
 
-        $body = [
-            'status' => !empty($options['responseStatus']) ? $options['responseStatus'] : 'NOK',
-            'result' => [
-                'error' => ($code < 500) ? 'Not Found' : 'An Internal Error Has Occurred.',
+        $responseFormat = $this->_getController()->responseFormat;
+        $responseData = [
+            $responseFormat['statusKey'] => !empty($options['responseStatus']) ? $options['responseStatus'] : $responseFormat['statusNokText'],
+            $responseFormat['resultKey'] => [
+                $responseFormat['errorKey'] => ($code < 500) ? 'Not Found' : 'An Internal Error Has Occurred.',
             ],
         ];
 
-        if (isset($options['customMessage']) && $options['customMessage']) {
-            $body['result']['error'] = $exception->getMessage();
+        if ((isset($options['customMessage']) && $options['customMessage']) || Configure::read('ApiRequest.debug')) {
+            $responseData[$responseFormat['resultKey']][$responseFormat['errorKey']] = $exception->getMessage();
         }
 
-        $response->type('json');
-        $response->body(json_encode($body));
+        if ('xml' === Configure::read('ApiRequest.responseType')) {
+            $body = $response->getBody();
+            $body->write(Xml::fromArray([Configure::read('ApiRequest.xmlResponseRootNode') => $responseData], 'tags')->asXML());
+            $response->withBody($body);
+        } else {
+            $body = $response->getBody();
+            $body->write(json_encode($responseData));
+            $response->withBody($body);
+        }
+
+        $this->controller->response = $response;
 
         return $response;
     }

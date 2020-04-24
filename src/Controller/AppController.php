@@ -3,6 +3,7 @@
 namespace RestApi\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 /**
@@ -24,7 +25,14 @@ class AppController extends Controller
      *
      * @var string
      */
-    public $responseStatus = "OK";
+    public $responseStatus = "";
+
+    /**
+     * Response format configuration
+     *
+     * @var array
+     */
+    public $responseFormat = [];
 
     /**
      * API response data
@@ -56,6 +64,19 @@ class AppController extends Controller
     {
         parent::initialize();
 
+        $this->responseFormat = [
+            'statusKey' => (null !== Configure::read('ApiRequest.responseFormat.statusKey')) ? Configure::read('ApiRequest.responseFormat.statusKey') : 'status',
+            'statusOkText' => (null !== Configure::read('ApiRequest.responseFormat.statusOkText')) ? Configure::read('ApiRequest.responseFormat.statusOkText') : 'OK',
+            'statusNokText' => (null !== Configure::read('ApiRequest.responseFormat.statusNokText')) ? Configure::read('ApiRequest.responseFormat.statusNokText') : 'NOK',
+            'resultKey' => (null !== Configure::read('ApiRequest.responseFormat.resultKey')) ? Configure::read('ApiRequest.responseFormat.resultKey') : 'result',
+            'messageKey' => (null !== Configure::read('ApiRequest.responseFormat.messageKey')) ? Configure::read('ApiRequest.responseFormat.messageKey') : 'message',
+            'defaultMessageText' => (null !== Configure::read('ApiRequest.responseFormat.defaultMessageText')) ? Configure::read('ApiRequest.responseFormat.defaultMessageText') : 'Empty response!',
+            'errorKey' => (null !== Configure::read('ApiRequest.responseFormat.errorKey')) ? Configure::read('ApiRequest.responseFormat.errorKey') : 'error',
+            'defaultErrorText' => (null !== Configure::read('ApiRequest.responseFormat.defaultErrorText')) ? Configure::read('ApiRequest.responseFormat.defaultErrorText') : 'Unknown request!'
+        ];
+
+        $this->responseStatus = $this->responseFormat['statusOkText'];
+
         $this->loadComponent('RequestHandler');
         $this->loadComponent('RestApi.AccessControl');
     }
@@ -70,21 +91,22 @@ class AppController extends Controller
     {
         parent::beforeRender($event);
 
-        $this->response->statusCode($this->httpStatusCode);
+        $this->response->getStatusCode($this->httpStatusCode);
 
         if (200 != $this->httpStatusCode) {
-            $this->responseStatus = "NOK";
+            $this->responseStatus = $this->responseFormat['statusNokText'];
         }
 
         $response = [
-            'status' => $this->responseStatus
+            $this->responseFormat['statusKey'] => $this->responseStatus
         ];
 
         if (!empty($this->apiResponse)) {
-            $response['result'] = $this->apiResponse;
+            $response[$this->responseFormat['resultKey']] = $this->apiResponse;
         }
 
         $this->set('response', $response);
+        $this->set('responseFormat', $this->responseFormat);
 
         return null;
     }

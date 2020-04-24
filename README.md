@@ -47,13 +47,13 @@ class FooController extends ApiController
      */
     public function bar()
     {
-		// your action logic
+	// your action logic
 
-		// Set the HTTP status code. By default, it is set to 200
-		$this->httpStatusCode = 200;
+	// Set the HTTP status code. By default, it is set to 200
+	$this->httpStatusCode = 200;
 
-		// Set the response
-		$this->apiResponse['you_response'] = 'your response data';
+	// Set the response
+        $this->apiResponse['you_response'] = 'your response data';
     }
 }
 ```
@@ -66,13 +66,28 @@ The URL for above example will be `http://yourdomain.com/foo/bar`. You can custo
 Simple :)
 
 ## Configurations
-This plugin provides several configuration related to `CORS` , Request Logging and `JWT` authentication. The default configurations are as below and defined in `RestApi/config/api.php`.
+This plugin provides several configuration related to Response Format, `CORS` , Request Logging and `JWT` authentication. The default configurations are as below and defined in `RestApi/config/api.php`.
 ```php
 <?php
 
 return [
     'ApiRequest' => [
-	    'log' => false,
+        'debug' => false,
+        'responseType' => 'json',
+        'xmlResponseRootNode' => 'response',
+    	'responseFormat' => [
+            'statusKey' => 'status',
+            'statusOkText' => 'OK',
+            'statusNokText' => 'NOK',
+            'resultKey' => 'result',
+            'messageKey' => 'message',
+            'defaultMessageText' => 'Empty response!',
+            'errorKey' => 'error',
+            'defaultErrorText' => 'Unknown request!'
+        ],
+        'log' => false,
+	'logOnlyErrors' => true,
+        'logOnlyErrorCodes' => [404, 500],
         'jwtAuth' => [
             'enabled' => true,
             'cypherKey' => 'R1a#2%dY2fX@3g8r5&s4Kf6*sd(5dHs!5gD4s',
@@ -88,6 +103,11 @@ return [
     ]
 ];
 ```
+### Debug
+Set `debug` to true in your development environment to get original exception messages in response.
+
+### Response format
+It supports `json` and `xml` formats. The default response format is `json`. Set `responseType` to change your response format. In case of `xml` format, you can set the root element name by `xmlResponseRootNode` parameter.
 
 ### Request authentication using JWT
 You can check for presence of auth token in API request. By default it is enabled. You need to define a flag `allowWithoutToken` to `true` or `false`. For example,
@@ -133,18 +153,18 @@ class AccountController extends ApiController
         /**
          * process your data and validate it against database table
          */
-        
-		// generate token if valid user
-		$payload = ['email' => $user->email, 'name' => $user->name];
+
+	// generate token if valid user
+	$payload = ['email' => $user->email, 'name' => $user->name];
 
         $this->apiResponse['token'] = JwtToken::generateToken($payload);
-        $this->apiResponse['message'] = 'Logged in successfully.'; 
+        $this->apiResponse['message'] = 'Logged in successfully.';
     }
 }
 ```
 
 ### cors
-By default, cors requests are enabled and allowed from all domains. You can overwrite these settings by creating config file at `APP/config/api.php` . The content of file will look like,
+By default, cors requests are enabled and allowed from all domains. You can overwrite these settings by creating config file at `APP/config/api.php`. The content of file will look like,
 ```php
 <?php
 return [
@@ -195,6 +215,7 @@ CREATE TABLE IF NOT EXISTS `api_requests` (
   `ip_address` varchar(50) NOT NULL,
   `request_data` longtext,
   `response_code` int(5) NOT NULL,
+  `response_type` varchar(50) DEFAULT 'json',
   `response_data` longtext,
   `exception` longtext,
   `created` datetime NOT NULL,
@@ -206,6 +227,19 @@ Or you can use the `bake` command to automatically generate the above table.
 ```sh
 $ bin/cake migrations migrate --plugin RestApi
 ```
+
+#### Log only error responses
+Sometimes, it is not necessary to log each and every request and response. We just want to log the request and response in case of error only. For that, you can set the additional settings using `logOnlyErrors` option.
+
+```php
+'logOnlyErrors' => true, // it will log only errors
+'logOnlyErrorCodes' => [404, 500], // Specify the response codes to consider
+```
+
+> If the `logOnlyErrors` is set, this will only log the request and response which are not equals to 200 OK.
+> You can specify to log the request for only specific response code. You can specify the response codes in `logOnlyErrorCodes` option in array format.
+> This will only work if the `log` option is set to `true`
+
 ## Response format
 The default response format of API is `json` and its structure is defined as below.
 ```json
@@ -217,6 +251,19 @@ The default response format of API is `json` and its structure is defined as bel
 }
 ```
 If you have set httpResponseCode to any value other that 200, the `status` value will be `NOK` otherwise `OK`. In case of exceptions, it will be handled automatically and set the appropriate status code.
+> You can modify the default response configuration like the text for OK response, key for main response data, etc. by overwriting them  in your `APP/config/api.php` file.
+
+In case of `xml` format, the response structure will look like,
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <status>1</status>
+    <result>
+        // your data
+    </result>
+</response>
+```
+
 ## Examples
 Below are few examples to understand how this plugin works.
 
@@ -270,7 +317,7 @@ The response of above API call will look like,
 }
 ```
 ### Exception handling
-This plugin will handle the exceptions being thrown from your action. For example, if you API method only allows `POST` method and someone makes a `GET` request, it will generate `NOK` response with proper HTTP response code. For example, 
+This plugin will handle the exceptions being thrown from your action. For example, if you API method only allows `POST` method and someone makes a `GET` request, it will generate `NOK` response with proper HTTP response code. For example,
 ```php
 <?php
 

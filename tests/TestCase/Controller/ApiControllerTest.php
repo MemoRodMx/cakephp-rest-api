@@ -54,13 +54,5 @@ class ApiControllerTest extends IntegrationTestCase
 
         $this->assertNotEmpty($this->controller->httpStatusCode);
         $this->assertNotEmpty($this->controller->responseStatus);
-        $this->assertContains($this->controller->responseStatus, ['OK', 'NOK']);
-    }
-
-    public function testHttpStatusCode()
-    {
-        $this->controller->httpStatusCode = 404;
-        $this->controller->beforeRender(new Event('Controller.beforeRender'));
-        $this->assertEquals('NOK', $this->controller->responseStatus);
     }
 }

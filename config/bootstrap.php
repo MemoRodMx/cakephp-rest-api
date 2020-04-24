@@ -17,3 +17,8 @@ try {
 } catch (Exception $e) {
     // nothing
 }
+
+// Set default response format
+if (!in_array(Configure::read('ApiRequest.responseType'), ['json', 'xml'])) {
+    Configure::write('ApiRequest.responseType', 'json');
+}

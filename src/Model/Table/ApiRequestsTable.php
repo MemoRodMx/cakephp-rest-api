@@ -22,8 +22,8 @@ class ApiRequestsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('api_requests');
-        $this->primaryKey('id');
+        $this->setTable('api_requests');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
     }

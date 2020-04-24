@@ -2,6 +2,7 @@
 
 namespace RestApi\View;
 
+use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
 use Cake\View\View;
 
@@ -14,6 +15,13 @@ class ApiView extends View
 {
 
     /**
+     * Layout
+     *
+     * @var string
+     */
+    protected $_responseLayout = 'response';
+
+    /**
      * Initialization hook method.
      *
      * @return void
@@ -22,7 +30,12 @@ class ApiView extends View
     {
         parent::initialize();
 
-        $this->response->type('json');
+        if ('xml' === Configure::read('ApiRequest.responseType')) {
+            $this->response->withType('xml');
+            $this->_responseLayout = 'xml_response';
+        } else {
+            $this->response->withType('json');
+        }
     }
 
     /**
@@ -39,7 +52,7 @@ class ApiView extends View
             return null;
         }
 
-        $this->layout = 'RestApi.response';
+        $this->layout = "RestApi.{$this->_responseLayout}";
 
         $this->Blocks->set('content', $this->renderLayout('', $this->layout));
 
