@@ -1,6 +1,6 @@
 {
-    "name": "multidots/cakephp-rest-api",
-    "description": "CakePHP 3 plugin to provide basic support for building REST API services",
+    "name": "MemoRodMx/cakephp-rest-api",
+    "description": "CakePHP 3 plugin to provide basic support for building REST API services (Fork from multidots/cakephp-rest-api unavailable)",
     "keywords": ["cakephp", "rest", "api"],
     "type": "cakephp-plugin",
     "homepage": "https://github.com/cakephp/debug_kit",
@@ -13,12 +13,12 @@
         },
         {
             "name": "Community",
-            "homepage": "https://github.com/multidots/cakephp-rest-api/graphs/contributors"
+            "homepage": "https://github.com/MemoRodMx/cakephp-rest-api/graphs/contributors"
         }
     ],
     "support": {
-        "issues": "https://github.com/multidots/cakephp-rest-api/issues",
-        "source": "https://github.com/multidots/cakephp-rest-api"
+        "issues": "https://github.com/MemoRodMx/cakephp-rest-api/issues",
+        "source": "https://github.com/MemoRodMx/cakephp-rest-api"
     },
     "require": {
         "php": ">=5.5.9",
