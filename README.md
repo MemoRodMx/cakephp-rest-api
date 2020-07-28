@@ -1,4 +1,4 @@
-# RestApi plugin for CakePHP 3
+# RestApi plugin for CakePHP 3 and CakePHP 4
 
 [![Build Status](https://travis-ci.org/multidots/cakephp-rest-api.svg?branch=master)](https://travis-ci.org/multidots/cakephp-rest-api)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/multidots/cakephp-rest-api/master/LICENSE)
