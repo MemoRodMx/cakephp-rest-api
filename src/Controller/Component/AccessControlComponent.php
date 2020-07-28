@@ -19,7 +19,6 @@ use RestApi\Routing\Exception\MissingTokenException;
  */
 class AccessControlComponent extends Component
 {
-
     /**
      * beforeFilter method.
      *
@@ -46,9 +45,12 @@ class AccessControlComponent extends Component
      */
     protected function _performTokenValidation(Event $event)
     {
-        $request = $event->getSubject()->request;
+        $request = $event->getSubject()->getRequest();
 
-        if (!empty($request->getParam('allowWithoutToken')) && $request->getParam('allowWithoutToken')) {
+        if (
+            !empty($request->getParam('allowWithoutToken')) &&
+            $request->getParam('allowWithoutToken')
+        ) {
             return true;
         }
 
@@ -59,13 +61,17 @@ class AccessControlComponent extends Component
         if (!empty($header[0])) {
             $parts = explode(' ', $header[0]);
 
-            if (count($parts) < 2 || empty($parts[0]) || !preg_match('/^Bearer$/i', $parts[0])) {
-                throw new InvalidTokenFormatException();
+            if (
+                count($parts) < 2 ||
+                empty($parts[0]) ||
+                !preg_match('/^Bearer$/i', $parts[0])
+            ) {
+                throw new InvalidTokenFormatException('TEST');
             }
 
             $token = $parts[1];
-        } elseif (!empty($this->request->getQuery('token'))) {
-            $token = $this->request->getQuery('token');
+        } elseif (!empty($request->getQuery('token'))) {
+            $token = $request->getQuery('token');
         } elseif (!empty($request->getParam('token'))) {
             $token = $request->getParam('token');
         } else {
@@ -73,7 +79,11 @@ class AccessControlComponent extends Component
         }
 
         try {
-            $payload = JWT::decode($token, Configure::read('ApiRequest.jwtAuth.cypherKey'), [Configure::read('ApiRequest.jwtAuth.tokenAlgorithm')]);
+            $payload = JWT::decode(
+                $token,
+                Configure::read('ApiRequest.jwtAuth.cypherKey'),
+                [Configure::read('ApiRequest.jwtAuth.tokenAlgorithm')]
+            );
         } catch (\Exception $e) {
             throw new InvalidTokenException();
         }

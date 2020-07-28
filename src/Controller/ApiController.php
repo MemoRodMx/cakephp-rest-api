@@ -11,14 +11,13 @@ use Cake\Event\Event;
  */
 class ApiController extends AppController
 {
-
     /**
      * Before render callback.
      *
      * @param Event $event The beforeRender event.
      * @return \Cake\Network\Response|null
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(\Cake\Event\EventInterface $event)
     {
         $this->viewBuilder()->setClassName('RestApi.Api');
 

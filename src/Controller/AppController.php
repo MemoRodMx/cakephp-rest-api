@@ -5,14 +5,12 @@ namespace RestApi\Controller;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-
 /**
  * Application Controller
  *
  */
 class AppController extends Controller
 {
-
     /**
      * HTTP Status Code
      *
@@ -60,19 +58,51 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
         $this->responseFormat = [
-            'statusKey' => (null !== Configure::read('ApiRequest.responseFormat.statusKey')) ? Configure::read('ApiRequest.responseFormat.statusKey') : 'status',
-            'statusOkText' => (null !== Configure::read('ApiRequest.responseFormat.statusOkText')) ? Configure::read('ApiRequest.responseFormat.statusOkText') : 'OK',
-            'statusNokText' => (null !== Configure::read('ApiRequest.responseFormat.statusNokText')) ? Configure::read('ApiRequest.responseFormat.statusNokText') : 'NOK',
-            'resultKey' => (null !== Configure::read('ApiRequest.responseFormat.resultKey')) ? Configure::read('ApiRequest.responseFormat.resultKey') : 'result',
-            'messageKey' => (null !== Configure::read('ApiRequest.responseFormat.messageKey')) ? Configure::read('ApiRequest.responseFormat.messageKey') : 'message',
-            'defaultMessageText' => (null !== Configure::read('ApiRequest.responseFormat.defaultMessageText')) ? Configure::read('ApiRequest.responseFormat.defaultMessageText') : 'Empty response!',
-            'errorKey' => (null !== Configure::read('ApiRequest.responseFormat.errorKey')) ? Configure::read('ApiRequest.responseFormat.errorKey') : 'error',
-            'defaultErrorText' => (null !== Configure::read('ApiRequest.responseFormat.defaultErrorText')) ? Configure::read('ApiRequest.responseFormat.defaultErrorText') : 'Unknown request!'
+            'statusKey' =>
+                null !== Configure::read('ApiRequest.responseFormat.statusKey')
+                    ? Configure::read('ApiRequest.responseFormat.statusKey')
+                    : 'status',
+            'statusOkText' =>
+                null !==
+                Configure::read('ApiRequest.responseFormat.statusOkText')
+                    ? Configure::read('ApiRequest.responseFormat.statusOkText')
+                    : 'OK',
+            'statusNokText' =>
+                null !==
+                Configure::read('ApiRequest.responseFormat.statusNokText')
+                    ? Configure::read('ApiRequest.responseFormat.statusNokText')
+                    : 'NOK',
+            'resultKey' =>
+                null !== Configure::read('ApiRequest.responseFormat.resultKey')
+                    ? Configure::read('ApiRequest.responseFormat.resultKey')
+                    : 'result',
+            'messageKey' =>
+                null !== Configure::read('ApiRequest.responseFormat.messageKey')
+                    ? Configure::read('ApiRequest.responseFormat.messageKey')
+                    : 'message',
+            'defaultMessageText' =>
+                null !==
+                Configure::read('ApiRequest.responseFormat.defaultMessageText')
+                    ? Configure::read(
+                        'ApiRequest.responseFormat.defaultMessageText'
+                    )
+                    : 'Empty response!',
+            'errorKey' =>
+                null !== Configure::read('ApiRequest.responseFormat.errorKey')
+                    ? Configure::read('ApiRequest.responseFormat.errorKey')
+                    : 'error',
+            'defaultErrorText' =>
+                null !==
+                Configure::read('ApiRequest.responseFormat.defaultErrorText')
+                    ? Configure::read(
+                        'ApiRequest.responseFormat.defaultErrorText'
+                    )
+                    : 'Unknown request!',
         ];
 
         $this->responseStatus = $this->responseFormat['statusOkText'];
@@ -87,7 +117,7 @@ class AppController extends Controller
      * @param Event $event The beforeRender event.
      * @return \Cake\Network\Response|null
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(\Cake\Event\EventInterface $event)
     {
         parent::beforeRender($event);
 
@@ -98,7 +128,7 @@ class AppController extends Controller
         }
 
         $response = [
-            $this->responseFormat['statusKey'] => $this->responseStatus
+            $this->responseFormat['statusKey'] => $this->responseStatus,
         ];
 
         if (!empty($this->apiResponse)) {

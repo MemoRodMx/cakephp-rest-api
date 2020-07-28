@@ -10,6 +10,10 @@ This plugin provides basic support for building REST API services in your CakePH
 ## Requirements
 This plugin has the following requirements:
 
+* For CakePHP 4.0 or greater
+
+composer require memorodmx/cakephp-rest-api "^1.2"
+
 * CakePHP 3.0.0 or greater.
 * PHP 5.4.16 or greater.
 
@@ -18,7 +22,7 @@ You can install this plugin into your CakePHP application using [composer](http:
 
 The recommended way to install composer packages is:
 ```
-composer require memorodmx/cakephp-rest-api
+composer require memorodmx/cakephp-rest-api "^1.1"
 ```
 After installation, [Load the plugin](http://book.cakephp.org/3.0/en/plugins.html#loading-a-plugin)
 ```php
